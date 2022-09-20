@@ -114,6 +114,8 @@
           <th>Question Progress</th>
           <th>Question tags</th>
           <th>Exams</th>
+          <th>Add to cart
+          </th>
         </tr>
       </thead>
 
@@ -142,12 +144,16 @@
                 {% endfor %}
             </td>
             <td>
-              {{ question.exams}}
+              <!--{{ question.exams}} --> 
            </td>
+           <td>
+            <button data-question="{{question.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+         </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
-    
+
+    <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
 {% endblock %}
 

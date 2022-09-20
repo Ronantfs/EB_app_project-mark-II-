@@ -1,5 +1,9 @@
 ##import modules
 from django.shortcuts import render
+from django.http import JsonResponse
+import json
+
+
 from .models import Question #import all models
 from .forms import QuestionForm #import all forms 
 from .filters import QuestionFilter
@@ -49,6 +53,32 @@ class UpdateQuestionView(UpdateView):
     form_class = QuestionForm
     success_url = reverse_lazy('questions')
 
+
+
+def updateItem(request):
+  data = json.loads(request.body)
+  questionId = data['questionId']
+  action = data['action']
+  print('Action:', action)
+  print('Question:', questionId)
+
+  customer = request.user.customer
+  question = Question.objects.get(id=questionId)
+  order, created = Order.objects.get_or_create(customer=customer, complete=False)
+
+  orderItem, created = OrderItem.objects.get_or_create(order=order, question= question)
+
+  if action == 'add': 
+    orderItem.quantity = (orderItem.quantity + 1)
+  elif action == 'remove':
+    orderItem.quantity = (orderItem.quantity - 1)
+
+  orderItem.save()
+
+  if orderItem.quantity <= 0: 
+    orderItem.delete()
+
+  return JsonResponse('Item was added', safe=False)
 
 
 

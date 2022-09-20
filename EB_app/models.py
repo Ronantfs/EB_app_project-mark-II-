@@ -1,11 +1,16 @@
+import email
 from django.db import models
+from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 
-class Exam(models.Model):
-  title = models.CharField(unique=False, max_length=200)
+#############Models: 
+class Customer(models.Model):
+  user = models.OneToOneField(User, null = True, blank = True, on_delete = models.CASCADE)
+  name = models.CharField(max_length= 200, null = True)
+  email = models.CharField(max_length= 200)
 
-  def __str__(self):
-    return self.title
+  def __str__(self): 
+    return self.name
 
 class Question(models.Model):
   name = models.CharField(unique=False, max_length=200)
@@ -17,7 +22,7 @@ class Question(models.Model):
   AS_only = models.BooleanField(default = True)
   question_progress = models.IntegerField(default = 0)
   tags = TaggableManager()
-  exams = models.ManyToManyField(Exam, blank=True)
+  #exams = models.ManyToManyField(ExamOrder, blank=True)
   
   #image = models.ImageField(null =True, blank = True,upload_to='images/') #upload to: specifces which sub directory of media, images go to 
   #slug = models.SlugField(unique=True, default=uuid.uuid1)
@@ -33,9 +38,17 @@ class Question(models.Model):
     ordering = ["question_progress"]
 
 
+class ExamOrder(models.Model):
+  customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
+  complete = models.BooleanField(default=False)
+  transaction_id = models.CharField(max_length=100, null=True)
+  def __str__(self):
+    return str(self.id)
 
-
-
+class ExamOrderItem(models.Model):
+  question = models.ForeignKey(Question, on_delete=models.SET_NULL, null=True)
+  exam_order = models.ForeignKey(ExamOrder, on_delete=models.SET_NULL, null=True)
+  quantity = models.IntegerField(default=0, null=True, blank=True)
 
 
 

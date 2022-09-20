@@ -49,7 +49,7 @@ body{background-color: rgb(228, 250, 242)}
 table, th, td {      
   border: 1px solid;
   border-collapse: collapse;  /* double borders --. single border*/
-  width: 60%;
+  width: 90%;
   text-align: left;
   padding-left: 8px;
   margin-left: 10px;
@@ -180,5 +180,4 @@ prog_green { color: #206f50;}
 #one_progress_cell {background: rgb(249, 161, 89);color: black;}
 #two_progress_cell {background: rgb(243, 245, 153); color: black;}
 #three_progress_cell {background: rgb(126, 209, 140);}
-
 

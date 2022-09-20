@@ -9,4 +9,5 @@ urlpatterns = [
     path("questions/create", views.CreateQuestionView.as_view(), name = 'create_question'), #name consistent with questions template link
     path("questions/<pk>/delete/", views.DeleteQuestionView.as_view(), name='delete_question'), 
     path("questions/<pk>/update/", views.UpdateQuestionView.as_view(), name='update_question'), 
+    path("update_item/", views.updateItem, name = "update_item")
 ]
