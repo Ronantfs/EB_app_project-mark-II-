@@ -1,0 +1,20 @@
+<! DOCTYPE HTML > 
+<head>
+    <title>ExamBuilder</title>
+    {% block head %}  
+     
+    {% endblock %}
+</head>
+
+<body>
+
+    <header> 
+        <nav class="topnav">
+         <a class ='special_nav_item' href= "{% url 'home' %}"> Home </a>
+         <a  href= "{% url 'questions' %}"> Questions </a>
+        </nav>
+    </header>
+    
+    {% block content %}
+    {% endblock %}
+</body>

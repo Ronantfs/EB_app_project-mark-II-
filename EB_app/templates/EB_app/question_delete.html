@@ -1,0 +1,17 @@
+{% extends "EB_app/base.html" %}
+{% block title %} Delete Question{% endblock %} 
+
+{% load static %}
+
+
+{% block content %}
+
+<h1>Delete Question:</h1>
+<container>
+ <form method="POST"> {% csrf_token %}
+  <p>Are you sure you want to delete "{{ object.name}}"?</p>
+  <input type="submit" value="Confirm" /> 
+</container>
+
+{% endblock %}
+

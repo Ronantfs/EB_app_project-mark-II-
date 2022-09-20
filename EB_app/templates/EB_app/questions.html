@@ -1,0 +1,153 @@
+{% extends "EB_app/base.html" %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+  <link rel="stylesheet" href = "{% static 'EB_app/style.css' %}"> 
+{% endblock %}
+
+{% block content %}
+ <h1>Questions page</h1>
+
+
+ <h2>Set Question</h2>
+ <container> 
+    <a href="{% url "create_question" %}" > ➕ Create new question:  </a>
+ </container>
+
+ <h2>Search Q: ↴ </h2>
+ <container> 
+  <form method = "get">
+    {{ question_filter.form|crispy}}
+    <button type ="submit" class="yellow_button"> Submit</button>
+  </form>
+ </container>
+
+ <container> 
+   <table>
+   <thead>
+    <tr>
+      <th>Question</th>
+      <th>Source</th>
+      <th>Section</th>
+      <th>Tags</th>
+      <th>AS only?</th>
+      <th>Progress</th>
+      <th>Add to Exam</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for question in question_filter.qs %}
+      <tr>
+        <td>
+          <a>{{ question.name}}</a>
+        </td>
+        <td>
+            <a>{{ question.source}}</a>
+        </td>
+
+        <td>
+            <a>{{ question.section}}</a>
+        </td>
+
+        <td>
+            {% for tag in question.tags.all %}
+            <small_container>{{ tag }}</small_container>
+            {% endfor %}
+        </td>
+        
+        <td id="green_tick">
+          {% if question.AS_only == True %}
+          ✓
+          {% else %}
+         {% endif %}
+        </td>
+
+        {% if question.question_progress == 0 %}
+        <td id="zero_progress_cell">
+        <container id="zero_progress">
+        <p>UNATTEMPTED</p>
+        </container>
+        </td>
+        {% elif question.question_progress == 1 %}
+          <td id="one_progress_cell" >
+            <container id="one_progress">
+             <p>ATTEMPTED</p>
+            </container>
+          </td>
+        {% elif question.question_progress == 2 %}
+          <td id="two_progress_cell">
+            <container  id="two_progress">
+             <p>COMPLETED</p>
+            </container>
+          </td>
+        {% else %}
+          <td id="three_progress_cell">
+            <container  id="three_progress">
+             <p>REPEATED</p>
+            </container>
+          </td>
+        {% endif %}
+        <td>
+          <input type= "checkbox" name="add_to_exam" value="{{question.id}}">
+       </td>
+        
+
+      </tr>
+      {% endfor %}
+  </tbody>
+
+  </table>
+
+ </container>
+    
+ <h2>Question Bank</h2>
+    <table class="questions-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Question</th>
+          <th>Source</th>
+          <th>Section</th>
+          <th>Question Progress</th>
+          <th>Question tags</th>
+          <th>Exams</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for question in questions %}
+          <tr>
+            <td>
+                <a href="{% url "delete_question" question.id %}" > ❌ &nbsp&nbsp </a>
+                <a style="color: #206f50" href="{% url "update_question" question.id %}" >⟳ </a>
+            </td>
+            <td>
+              {{ question.name}}
+            </td>
+            <td>
+                {{ question.source}}
+            </td>
+            <td>
+              {{ question.section}}
+            </td>
+            <td>
+              {{ question.question_progress}}
+            </td>
+            <td>
+               {% for tag in question.tags.all %}
+                <small>{{ tag }}</small>
+                {% endfor %}
+            </td>
+            <td>
+              {{ question.exams}}
+           </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    
+{% endblock %}
+
