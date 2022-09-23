@@ -181,3 +181,10 @@ prog_green { color: #206f50;}
 #two_progress_cell {background: rgb(243, 245, 153); color: black;}
 #three_progress_cell {background: rgb(126, 209, 140);}
 
+
+
+/* images */
+img {
+    width: 30px;
+    height: 30px;
+}

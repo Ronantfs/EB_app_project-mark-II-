@@ -1,0 +1,129 @@
+{% extends "EB_app/base.html" %}
+{% load static %}
+
+{% block head %}
+  <link rel="stylesheet" href = "{% static 'EB_app/style.css' %}"> 
+{% endblock %}
+
+{% block content %}
+     <div class="row">
+		<div class="col-lg-6">
+			<div class="box-element" id="form-wrapper">
+				<form id="form">
+					<div id="user-info">
+						<div class="form-field">
+							<input required class="form-control" type="text" name="name" placeholder="Name..">
+						</div>
+						<div class="form-field">
+							<input required class="form-control" type="email" name="email" placeholder="Email..">
+						</div>
+					</div>
+                    
+					<!--  Shipping Info  -->
+					<container style="margin-top: 10px" class="shipping-info">
+						<hr>
+						<p>Shipping Information:</p>
+						<hr>
+						<div class="form-field">
+							<input class="form-control" type="text" name="exam title" placeholder="Exam title......">
+						</div>
+					</container>
+
+					<hr>
+					<input id="form-button" class="btn btn-success btn-block" type="submit" value="Submit">
+				</form>
+			</div>
+
+			<br>
+			<div class="box-element hidden" id="payment-info">
+				<small>Paypal Options</small>
+			</div>
+			
+		</div>
+        <!-- order summary -->
+		<div class="col-lg-6">
+			<div class="box-element">
+				<h3>Order Summary</h3>
+				<hr>
+				<container class="cart-row">
+					<div style="flex:2"><img class="row-image" src="{% static 'images/placeholder.png' %}"></div>
+					<div style="flex:2"><p>Product 1</p></div>
+					<div style="flex:1"><p>$20.00</p></div>
+					<div style="flex:1"><p>x2</p></div>
+                </container>
+                <container>
+                    <div style="flex:1"><h5>Items:   2</h5> </div>
+                    <div style="flex:1"><h5>Total:   $4</h5></div>
+                </container>
+                <a  class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
+				<hr>
+			</div>
+		</div>
+	</div>
+
+    <script type="text/javascript">
+        var shipping = '{{examorder.shipping}}'
+
+        if (user != 'AnonymousUser'){    //if user logged in 
+		 	document.getElementById('user-info').innerHTML = ''  //Delete the HTML content of user-info? maybe no need as already have this info 
+		 }
+        
+        if (shipping == 'False'){  //if user logged in 
+		 	document.getElementById('shipping-info').innerHTML = '' //Delete the HTML content of shipping info
+		}
+
+        var form = document.getElementById('form')
+		form.addEventListener('submit', function(e){
+	    	e.preventDefault() //  cancels  event if  cancelable => default action that belongs to  event will not occur.
+	    	console.log('Form Submitted...')
+	    	document.getElementById('form-button').classList.add("hidden");    // what thewse do? 
+	    	document.getElementById('payment-info').classList.remove("hidden");  //what these do? 
+	    })
+
+        document.getElementById('make-payment').addEventListener('click', function(e){   //change this to make exam 
+	    	submitFormData()
+	    })
+
+        function submitFormData(){
+	    	console.log('Payment button clicked')
+
+	    	var userFormData = {
+				'name':null,
+				'email':null
+			}
+
+			var shippingInfo = {
+				'exam title':null,
+			}
+
+            if (shipping != 'False'){   //edit this to change to manual input details about exam title etc
+	    		shippingInfo.address = form.address.value
+		    	shippingInfo.city = form.city.value
+		    	shippingInfo.state = form.state.value
+		    	shippingInfo.zipcode = form.zipcode.value } 
+            
+            if (user == 'AnonymousUser'){
+	    		userFormData.name = form.name.value
+	    		userFormData.email = form.email.value}
+
+	    	console.log('Shipping Info:', shippingInfo)
+	    	console.log('User Info:', userFormData)
+
+            var url = "/process_order/"
+	    	fetch(url, {     //uploading json-encoded data to URL path 
+	    		method:'POST',
+	    		headers:{ //data's meta data 
+	    			'Content-Type':'applicaiton/json', // declare data type as json
+	    			'X-CSRFToken':csrftoken,   
+	    		}, 
+	    		body:JSON.stringify({'form':userFormData, 'shipping':shippingInfo}), //form':userFormData, 'shipping':shippingInfo data we are Json encoding 
+	    	})
+            .then((response) => response.json()) //then is a response handler 
+	    	.then((data) => {
+				  console.log('Success:', data);
+				  alert('Transaction completed');  
+				  window.location.href = "{% url 'questions' %}"})
+
+	    }
+    </script> 
+{% endblock content %}

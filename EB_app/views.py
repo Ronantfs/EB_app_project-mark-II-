@@ -2,9 +2,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 import json
+import datetime
 
 
-from .models import Question #import all models
+from .models import * #import all models
 from .forms import QuestionForm #import all forms 
 from .filters import QuestionFilter
 
@@ -53,8 +54,21 @@ class UpdateQuestionView(UpdateView):
     form_class = QuestionForm
     success_url = reverse_lazy('questions')
 
+#cart: ---------------------------------------------
+def cart(request):
 
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        exam_order, created = ExamOrder.objects.get_or_create(customer=customer, complete=False) 
+        questions = exam_order.examorderitem_set.all() #_set.all(): all exam_order_item objects linked to exam_order model 
+    
+    else:
+        questions = []
+    
+    context = {'questions': questions}
+    return render(request, 'EB_app/cart.html', context)
 
+#cart: ---------------------------------------------
 def updateItem(request):
   data = json.loads(request.body)
   questionId = data['questionId']
@@ -64,22 +78,62 @@ def updateItem(request):
 
   customer = request.user.customer
   question = Question.objects.get(id=questionId)
-  order, created = Order.objects.get_or_create(customer=customer, complete=False)
+  order, created = ExamOrder.objects.get_or_create(customer=customer, complete=False)
 
-  orderItem, created = OrderItem.objects.get_or_create(order=order, question= question)
+  examOrderItem, created = ExamOrderItem.objects.get_or_create(order=order, question= question)
 
   if action == 'add': 
-    orderItem.quantity = (orderItem.quantity + 1)
+    examOrderItem.quantity = 1
   elif action == 'remove':
-    orderItem.quantity = (orderItem.quantity - 1)
+    examOrderItem.quantity = 0
 
-  orderItem.save()
+  examOrderItem.save()
 
-  if orderItem.quantity <= 0: 
-    orderItem.delete()
+  if examOrderItem.quantity <= 0: 
+    examOrderItem.delete()
 
   return JsonResponse('Item was added', safe=False)
 
+
+
+
+def checkout(request):
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        examorder, created = ExamOrder.objects.get_or_create(customer=customer, complete=False) #examorder of log'd in user 
+        items = examorder.examorderitem_set.all() # items of log'd in user's examorder
+        cartItems = examorder.get_cart_items # cartitems of log'd in user's examorder
+    else: #Create empty cart for now for non-logged in user
+        items = []
+        examorder = {'get_cart_total':0, 'get_cart_items':0, 'shipping':False}
+        cartItems = examorder['get_cart_items']
+    
+    #link view function local varibles to html:
+    context = {'items':items, 'examorder':examorder, 'cartItems':cartItems} 
+    return render(request, 'EB_app/checkout.html', context)
+
+
+
+#views: 
+def processOrder(request): 
+    transaction_id = datetime.datetime.now().timestamp()
+    data = json.loads(request.body)
+    
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        examorder, created = ExamOrder.objects.get_or_create(customer=customer, complete=False)
+        examorder.transaction_id = transaction_id
+    else:
+        print('User is not logged in')
+    
+    examorder.save()
+    
+    if examorder.shipping == True: 
+        ShippingAddress.objects.create(customer=customer,examorder=examorder,address=data['shipping']['address'],
+        city=data['shipping']['city'],state=data['shipping']['state'],zipcode=data['shipping']['zipcode'],)
+
+    return JsonResponse('Order subbmitted..', safe=False)
 
 
 
