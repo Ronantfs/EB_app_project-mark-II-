@@ -74,7 +74,8 @@ class ExamOrder(models.Model):
 class ExamOrderItem(models.Model):
   question = models.ForeignKey(Question, on_delete=models.SET_NULL, null=True)
   exam_order = models.ForeignKey(ExamOrder, on_delete=models.SET_NULL, null=True)
-  quantity = models.IntegerField(default=0, null=True, blank=True)   
+  quantity = models.IntegerField(default=0, null=True, blank=True) 
+  question_number  
 
 
 class ShippingAddress(models.Model):

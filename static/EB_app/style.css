@@ -96,6 +96,30 @@ container{
   padding-top: 10px;
   padding-bottom: 10px;
  }
+ container_del{
+  color: red;
+  display: flex; 
+  background-color: #34745a;
+  width: 15%;
+  align-items: center;
+  justify-content: center;
+
+  border-style: solid;
+  border-radius: 8px;
+  border-width: 3px;
+  border-color: black;
+  
+  margin-bottom: 5px;
+ }
+
+ container_del:hover {
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+  font-weight: bold;
+  color: white;
+  background-color: red;
+  }
+ 
 
  small_container{
   color: white;

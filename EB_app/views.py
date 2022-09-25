@@ -61,7 +61,6 @@ def cart(request):
         customer = request.user.customer
         exam_order, created = ExamOrder.objects.get_or_create(customer=customer, complete=False) 
         questions = exam_order.examorderitem_set.all() #_set.all(): all exam_order_item objects linked to exam_order model 
-    
     else:
         questions = []
     
@@ -70,17 +69,16 @@ def cart(request):
 
 #cart: ---------------------------------------------
 def updateItem(request):
-  data = json.loads(request.data)
-  questionId = data['questionId'] #links html tag with 
-  action = data['action']   #links html 
+  print('request:' , request)
+  questionId = request.POST.get('questionId') #links html tag with 
+  action = request.POST.get('action')   #links html 
   print('Action:', action)
   print('Question:', questionId)
 
   customer = request.user.customer
   question = Question.objects.get(id=questionId)
-  order, created = ExamOrder.objects.get_or_create(customer=customer, complete=False)
-
-  examOrderItem, created = ExamOrderItem.objects.get_or_create(order=order, question= question)
+  exam_order, created = ExamOrder.objects.get_or_create(customer=customer, complete=False)
+  examOrderItem, created = ExamOrderItem.objects.get_or_create(exam_order= exam_order, question= question)
 
   if action == 'add': 
     examOrderItem.quantity = 1
@@ -89,12 +87,10 @@ def updateItem(request):
 
   examOrderItem.save()
 
-  if examOrderItem.quantity <= 0: 
+  if examOrderItem.quantity == 0: 
     examOrderItem.delete()
 
   return JsonResponse('Item was added', safe=False)
-
-
 
 
 def checkout(request):

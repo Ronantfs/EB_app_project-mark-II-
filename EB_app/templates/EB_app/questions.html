@@ -34,6 +34,7 @@
       <th>Tags</th>
       <th>AS only?</th>
       <th>Progress</th>
+      <th>Add to exam</th>
     </tr>
   </thead>
 
@@ -89,8 +90,12 @@
             </container>
           </td>
         {% endif %}
+        <td>
+          <button data-question="{{question.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+       </td>
       </tr>
       {% endfor %}
+      
   </tbody>
 
   </table>

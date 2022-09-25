@@ -36,8 +36,7 @@
 					<div style="flex:1">
 						<p class="quantity">Quantity: {{item.quantity}}</p>
 						<div class="quantity">
-                            <img data-question = "{{item.question.id}}" data-action ="add" class="chg-quantity update-cart" src="{% static  'images/arrow-up.png' %}">
-							<img data-question = "{{item.question.id}}" data-action ="remove" class="chg-quantity update-cart" src="{% static  'images/arrow-down.png' %}">
+                            <container_del data-question = "{{item.question.id}}" data-action ="remove" class="btn btn-outline-secondary add-btn update-cart"> ✘</container_del>
                         </div>
 					</div>
 				</container>
@@ -46,4 +45,5 @@
 			</div>
 		</div>
 	</div>
+    <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
 {% endblock content %}

@@ -1,5 +1,7 @@
-var updateBtns = document.getElementsByClassName('update-cart')
+console.log("JS script active")
 
+var updateBtns = document.getElementsByClassName('update-cart')
+//make buttons clickable & execute function with paramaters questionId
 for (i = 0; i < updateBtns.length; i++) {
 	updateBtns[i].addEventListener('click', function(){
 		var questionId = this.dataset.question
@@ -19,23 +21,26 @@ for (i = 0; i < updateBtns.length; i++) {
 
 function updateUserOrder(questionId, action){
     console.log('User is authenticated sending data')
+    console.log(questionId,action )
     
     var url = '/update_item/'
-
+    var data = new FormData()
+    data.append('questionId', questionId)
+    data.append('action', action)
 		fetch(url, {
 			method:'POST', //sending post-type data
 			headers:{
-				'Content-Type':'application/json',
                 'X-CSRFToken':csrftoken,
 			}, 
-			body:JSON.stringify({'questionId': questionId, 'action':action}) //send string'd data-object
+
+			body: data        
 		})
 		.then((response) => {
-            console.log(response);
+            console.log('response: ', response);
 		   return response.json();
 		})
 		.then((data) => {
-            console.log(data)
+            console.log('data: ', data)
 		    location.reload()
-		})
+		});
 }
