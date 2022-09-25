@@ -70,9 +70,9 @@ def cart(request):
 
 #cart: ---------------------------------------------
 def updateItem(request):
-  data = json.loads(request.body)
-  questionId = data['questionId']
-  action = data['action']
+  data = json.loads(request.data)
+  questionId = data['questionId'] #links html tag with 
+  action = data['action']   #links html 
   print('Action:', action)
   print('Question:', questionId)
 

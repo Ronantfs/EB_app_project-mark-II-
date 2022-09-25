@@ -28,27 +28,18 @@
 
 			<br>
             
-			<div class="box-element">
-				<div class="cart-row">
-					<div style="flex:2"></div>
-					<div style="flex:2"><strong>Item</strong></div>
-					<div style="flex:1"><strong>Price</strong></div>
-					<div style="flex:1"><strong>Quantity</strong></div>
-					<div style="flex:1"><strong>Total</strong></div>
-				</div>
-
+			<!-- Cart items -->
 				{% for item in questions %}
 				<container class="cart-row">
 					<div style="flex:1"><p>question: {{item.question.name}} </p></div>
 					<div style="flex:1"><p></p></div>
 					<div style="flex:1">
-						<p class="quantity">2</p>
+						<p class="quantity">Quantity: {{item.quantity}}</p>
 						<div class="quantity">
                             <img data-question = "{{item.question.id}}" data-action ="add" class="chg-quantity update-cart" src="{% static  'images/arrow-up.png' %}">
 							<img data-question = "{{item.question.id}}" data-action ="remove" class="chg-quantity update-cart" src="{% static  'images/arrow-down.png' %}">
                         </div>
 					</div>
-					<div style="flex:1"></div>
 				</container>
                 {% endfor %} 
 
