@@ -104,21 +104,25 @@ def updateItem(request):
 
   return JsonResponse('Item was added', safe=False)
 
-#cart: --------------------------------------------------------------
+#checkout : --------------------------------------------------------------
 def checkout(request):
-
     if request.user.is_authenticated:
         customer = request.user.customer
-        examorder, created = ExamOrder.objects.get_or_create(customer=customer, complete=False) #examorder of log'd in user 
+        examorder, created = ExamOrder.objects.get_or_create(customer=customer, complete=False) #examorder of log'd in user
+        examorder_number_of_qs = examorder.get_number_of_exam_qs
+        examorder_total_marks = examorder.get_total_marks
+        examorder_sections = examorder.get_sections
+
         items = examorder.examorderitem_set.all() # items of log'd in user's examorder
         cartItems = examorder.get_cart_items # cartitems of log'd in user's examorder
+        
     else: #Create empty cart for now for non-logged in user
         items = []
         examorder = {'get_cart_total':0, 'get_cart_items':0, 'shipping':False}
         cartItems = examorder['get_cart_items']
     
     #link view function local varibles to html:
-    context = {'items':items, 'examorder':examorder, 'cartItems':cartItems} 
+    context = {'items':items, 'examorder':examorder, 'cartItems':cartItems, 'number_of_qs':examorder_number_of_qs, 'total_marks':examorder_total_marks, 'author': customer, 'sections': examorder_sections} 
     return render(request, 'EB_app/checkout.html', context)
 
 

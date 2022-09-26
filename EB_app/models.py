@@ -16,12 +16,13 @@ class Question(models.Model):
   name = models.CharField(unique=False, max_length=200)
   source = models.CharField(unique=False, max_length=200)
   #sections
-  Section_choices = [("C","Core"),("S","Stats"),("M","Mechanics"),]
-  section = models.CharField(default = "C", max_length=1, choices= Section_choices)
-  publish_year = models.DateTimeField()
-  AS_only = models.BooleanField(default = True)
-  question_progress = models.IntegerField(default = 0)
+  Section_choices = [("Core","Core"),("Stats","Stats"),("Mechanics","Mechanics"),]
+  section = models.CharField(default = "Core", max_length=10, choices= Section_choices)
   tags = TaggableManager()
+  AS_only = models.BooleanField(default = True)
+  marks =  models.IntegerField(null = True, blank = True, default = 3)
+  question_progress = models.IntegerField(default = 0)
+  publish_year = models.DateTimeField()
   digital = models.BooleanField(default = False)
   #exams = models.ManyToManyField(ExamOrder, blank=True)
   
@@ -58,16 +59,35 @@ class ExamOrder(models.Model):
     return shipping
   
   @property
-  def get_cart_total(self):
+  def get_number_of_exam_qs(self):
     examorderitems = self.examorderitem_set.all()
-    total = sum([item.get_total for item in examorderitems])
-    return total 
+    qc = 0
+    for i in examorderitems: 
+      qc += 1 
+    return qc
+  
+  @property
+  def get_total_marks(self):
+    examorderitems = self.examorderitem_set.all()
+    tm = 0
+    for i in examorderitems: 
+      tm += i.question.marks
+    return tm
+  
+  @property
+  def get_sections(self):
+    examorderitems = self.examorderitem_set.all()
+    sections = []
+    for i in examorderitems: 
+      if i.question.section not in sections: 
+        sections.append(i.question.section)
+    return sections
+  
     
   @property
   def get_cart_items(self):
     examorderitems = self.examorderitem_set.all()
-    total = sum([item.quantity for item in examorderitems])
-    return total 
+    return examorderitems 
 
 
 
