@@ -67,7 +67,7 @@ def cart(request):
     context = {'questions': questions}
     return render(request, 'EB_app/cart.html', context)
 
-#cart: ---------------------------------------------
+#add/remove from cart: ---------------------------------------------
 def updateItem(request):
   print('request:' , request)
   questionId = request.POST.get('questionId') #links html tag with 
@@ -78,21 +78,33 @@ def updateItem(request):
   customer = request.user.customer
   question = Question.objects.get(id=questionId)
   exam_order, created = ExamOrder.objects.get_or_create(customer=customer, complete=False)
-  examOrderItem, created = ExamOrderItem.objects.get_or_create(exam_order= exam_order, question= question)
+  examOrderItem, created = ExamOrderItem.objects.get_or_create(exam_order= exam_order, question= question, exam_question_number = 1)
+   
 
   if action == 'add': 
-    examOrderItem.quantity = 1
+    examOrderItem.is_item_ordered = 1
+    examOrderItem.save()
+    ##number exam questions: 
+    if  exam_order.question_counter == None:
+        exam_order.question_counter = 0
+    exam_order.question_counter += 1 
+    print('number of questions in exam: ', exam_order.question_counter)
+    exam_order.save()
+
   elif action == 'remove':
-    examOrderItem.quantity = 0
+    examOrderItem.is_item_ordered = 0
+    examOrderItem.save()
+     ##number exam questions: 
+    exam_order.question_counter -= 1 
+    print('number of questions in exam: ', exam_order.question_counter)
+    exam_order.save()
 
-  examOrderItem.save()
-
-  if examOrderItem.quantity == 0: 
+  if examOrderItem.is_item_ordered == 0: 
     examOrderItem.delete()
 
   return JsonResponse('Item was added', safe=False)
 
-
+#cart: --------------------------------------------------------------
 def checkout(request):
 
     if request.user.is_authenticated:
