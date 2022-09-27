@@ -1,4 +1,5 @@
 import email
+from email.mime import image
 from django.db import models
 from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
@@ -24,10 +25,16 @@ class Question(models.Model):
   question_progress = models.IntegerField(default = 0)
   publish_year = models.DateTimeField()
   digital = models.BooleanField(default = False)
-  #exams = models.ManyToManyField(ExamOrder, blank=True)
-  
-  #image = models.ImageField(null =True, blank = True,upload_to='images/') #upload to: specifces which sub directory of media, images go to 
-  #slug = models.SlugField(unique=True, default=uuid.uuid1)
+  image = models.ImageField(null = True, blank = True)
+
+  #image method: 
+  @property
+  def imageURL(self): 
+    try: 
+      url = self.image.url
+    except: 
+      url = ''
+    return url 
   
 
   def get_absolute_url(self):

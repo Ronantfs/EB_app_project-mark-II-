@@ -43,7 +43,18 @@ body{background-color: rgb(228, 250, 242)}
     color: white;
   }
 
-/* ------------------------------------------------------------------------- */
+/* images---------------------------------------------------------------- */
+.thumbnail {
+  height: 50%; 
+  width: 50%;
+
+}
+
+
+
+
+
+
 
 /* tables ------------------------------------------------------------------------ */
 table, th, td {      
@@ -58,6 +69,15 @@ table, th, td {
 }
 
 th {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: #e2ba44;
+  border-color: black;
+  color: black;
+}
+
+.wide_th {
+  width: 150%;
   padding-top: 5px;
   padding-bottom: 5px;
   background-color: #e2ba44;
